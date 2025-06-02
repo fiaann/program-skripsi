@@ -25,7 +25,8 @@ uploaded_file = st.file_uploader("Upload gambar...", type=["jpg", "png", "jpeg"]
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file)
-    st.image(image, caption="Gambar yang diupload", use_column_width=True)
+    st.image(image, caption="Gambar yang diupload", use_container_width=True)
+
 
     st.write("Memprediksi...")
     img_array = preprocess_image(image)
