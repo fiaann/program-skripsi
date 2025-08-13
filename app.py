@@ -2,7 +2,7 @@ import streamlit as st
 import tensorflow as tf
 from PIL import Image
 import numpy as np
-import pandas as pd 
+import pandas as pd
 
 # Load model
 @st.cache_resource
@@ -27,17 +27,21 @@ if uploaded_file is not None:
     image = Image.open(uploaded_file)
     st.image(image, caption="Gambar yang diupload", use_container_width=True)
 
-
     st.write("Memprediksi...")
     img_array = preprocess_image(image)
     prediction = model.predict(img_array)
 
     classes = ['freshbanana', 'rawbanana', 'rottenbanana']
     
-    # Buat DataFrame dengan label huruf
-    prediction_df = pd.DataFrame(prediction, columns=classes)
-    st.write("Hasil Prediksi:")
-    st.dataframe(prediction_df)
+    # Ubah hasil prediksi menjadi persentase
+    prediction_percent = prediction * 100
+    prediction_df = pd.DataFrame(prediction_percent, columns=classes)
+    
+    st.write("Hasil Prediksi (%):")
+    st.dataframe(prediction_df.style.format("{:.2f}"))
 
-    predicted_class = classes[np.argmax(prediction)]
-    st.write(f"Model memprediksi: {predicted_class}")
+    predicted_class_index = np.argmax(prediction)
+    predicted_class = classes[predicted_class_index]
+    confidence = prediction_percent[0][predicted_class_index]
+
+    st.write(f"Model memprediksi: {predicted_class} ({confidence:.2f}%)")
